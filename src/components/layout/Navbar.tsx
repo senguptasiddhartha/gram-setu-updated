@@ -95,9 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="hidden sm:block">
           <div className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
             <span>Gram Setu</span>
-            <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-              Low-Bandwidth PoC
-            </span>
+            
           </div>
           <p className="text-[11px] text-slate-500 font-medium hidden md:block">
             {t.subtitle}
