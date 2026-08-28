@@ -35,10 +35,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
     selectedVillage,
     alerts,
     farmers,
-    healthScreenings,
     currentCrossDomainRisk,
     updateAlertStatus,
   } = useApp();
+
+  /* =========================================================
+     RISK DATA
+  ========================================================= */
 
   const activeAlerts = alerts.filter(
     (alert) => alert.status !== 'Resolved'
@@ -71,13 +74,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
   const riskCategory =
     currentCrossDomainRisk?.riskCategory || 'HIGH';
 
+  /* =========================================================
+     AUDIO ADVISORY
+  ========================================================= */
+
   const advisoryText = `
-    Gram Setu rural intelligence advisory for ${selectedVillage.name}.
+    ${t.appTitle} advisory for ${selectedVillage.name}.
     Overall community risk score is ${currentRisk} out of 100.
     ${currentCrossDomainRisk?.whyThisMatters || ''}
     Priority action is to reduce prolonged outdoor exposure,
     provide hydration and initiate targeted health and agricultural monitoring.
   `;
+
+  /* =========================================================
+     RISK TREND
+  ========================================================= */
 
   const trendData = [
     { day: 'Mon', value: 48 },
@@ -97,52 +108,64 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       ===================================================== */}
 
       <PageHeader
-        title="Rural Risk Command Center"
-        subtitle={`Predictive health and agricultural risk monitoring for ${selectedVillage.name}.`}
+        title={t.dashboard}
+        subtitle={t.subtitle}
         badge="LIVE"
       >
         <button
+          type="button"
           onClick={() => onNavigate('cross-domain')}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-sm transition-colors"
         >
           <Flame className="w-4 h-4" />
-          Run Risk Assessment
+          <span>{t.runAssessment}</span>
         </button>
       </PageHeader>
 
       {/* =====================================================
-          LOCATION / STATUS BAR
+          LOCATION / STATUS
       ===================================================== */}
 
       <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
         <div className="flex items-center gap-3">
+
           <div className="w-9 h-9 rounded-xl bg-teal-50 flex items-center justify-center">
             <MapPin className="w-4 h-4 text-teal-600" />
           </div>
 
           <div>
             <p className="text-xs text-slate-500">
-              Monitoring cluster
+              {t.systemStatus}
             </p>
+
             <p className="text-sm font-bold text-slate-900">
               {selectedVillage.name}
             </p>
           </div>
+
         </div>
 
         <div className="flex items-center gap-4 text-xs">
+
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
+
             <span className="font-semibold text-slate-600">
-              Predictive engine active
+              {t.operational}
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-slate-500">
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Auto monitored</span>
+
+            <span>
+              {t.offlineFirst}
+            </span>
           </div>
+
         </div>
+
       </div>
 
       {/* =====================================================
@@ -155,7 +178,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           title={t.registeredFarmers}
           value={farmers.length}
           icon={<Users className="w-5 h-5" />}
-          trend="Registered in local database"
+          trend={t.synced}
           trendDirection="up"
         />
 
@@ -163,7 +186,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           title={t.healthWorkersCount}
           value={12}
           icon={<HeartPulse className="w-5 h-5" />}
-          trend="Field network available"
+          trend={t.operational}
           trendDirection="up"
         />
 
@@ -173,8 +196,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           icon={<Bell className="w-5 h-5" />}
           trend={
             activeAlerts.length > 0
-              ? 'Requires attention'
-              : 'No active alerts'
+              ? t.high
+              : t.low
           }
           trendDirection="up"
         />
@@ -183,7 +206,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           title={t.highPriorityCases}
           value={highPriorityCases}
           icon={<ShieldCheck className="w-5 h-5" />}
-          trend="High / critical risk"
+          trend={`${t.high} / ${t.critical}`}
           trendDirection="up"
         />
 
@@ -195,7 +218,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        {/* Overall Risk */}
+        {/* ===================================================
+            OVERALL RISK
+        =================================================== */}
 
         <div className="lg:col-span-2 bg-slate-950 text-white rounded-2xl p-6 overflow-hidden relative">
 
@@ -206,22 +231,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
               <div>
+
                 <div className="flex items-center gap-2">
+
                   <Sparkles className="w-4 h-4 text-teal-400" />
 
                   <p className="text-xs font-bold uppercase tracking-wider text-teal-400">
-                    Cross-Domain Intelligence
+                    {t.crossDomainEngine}
                   </p>
+
                 </div>
 
                 <h2 className="text-xl font-bold mt-2">
-                  Overall Rural Risk
+                  {t.overallRuralRisk}
                 </h2>
 
                 <p className="text-xs text-slate-400 mt-1 max-w-lg">
-                  Combined assessment of environmental,
-                  agricultural and occupational-health indicators.
+                  {t.subtitle}
                 </p>
+
               </div>
 
               <RiskBadge level={riskCategory} />
@@ -230,7 +258,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
 
-              {/* Score */}
+              {/* SCORE */}
 
               <div className="flex items-center gap-5">
 
@@ -240,6 +268,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                     viewBox="0 0 100 100"
                     className="w-full h-full -rotate-90"
                   >
+
                     <circle
                       cx="50"
                       cy="50"
@@ -259,24 +288,32 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                       strokeWidth="8"
                       strokeLinecap="round"
                       className="text-teal-400"
-                      strokeDasharray={`${currentRisk * 2.51} 251`}
+                      strokeDasharray={`${Math.min(
+                        currentRisk * 2.51,
+                        251
+                      )} 251`}
                     />
+
                   </svg>
 
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
+
                     <span className="text-2xl font-black">
                       {currentRisk}
                     </span>
+
                     <span className="text-[9px] text-slate-400">
                       / 100
                     </span>
+
                   </div>
 
                 </div>
 
                 <div>
+
                   <p className="text-xs text-slate-400">
-                    Community score
+                    {t.overallRuralRisk}
                   </p>
 
                   <p className="text-sm font-bold mt-1">
@@ -284,22 +321,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                   </p>
 
                   <p className="text-[11px] text-slate-500 mt-2">
-                    Updated from current risk indicators
+                    {t.dataSyncHealth}
                   </p>
+
                 </div>
 
               </div>
 
-              {/* Heat */}
+              {/* HEAT */}
 
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
 
                 <div className="flex items-center justify-between">
+
                   <ThermometerSun className="w-4 h-4 text-orange-400" />
 
                   <span className="text-[10px] text-slate-400">
-                    HEAT
+                    {t.healthRisk}
                   </span>
+
                 </div>
 
                 <p className="text-2xl font-black mt-3">
@@ -307,21 +347,23 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </p>
 
                 <p className="text-[10px] text-slate-400 mt-1">
-                  Occupational heat stress
+                  {t.healthRisk}
                 </p>
 
               </div>
 
-              {/* Agriculture */}
+              {/* AGRICULTURE */}
 
               <div className="bg-white/5 rounded-xl p-4 border border-white/10">
 
                 <div className="flex items-center justify-between">
+
                   <Sprout className="w-4 h-4 text-emerald-400" />
 
                   <span className="text-[10px] text-slate-400">
-                    AGRICULTURE
+                    {t.agriRisk}
                   </span>
+
                 </div>
 
                 <p className="text-2xl font-black mt-3">
@@ -329,35 +371,43 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </p>
 
                 <p className="text-[10px] text-slate-400 mt-1">
-                  Crop risk indicator
+                  {t.agriRisk}
                 </p>
 
               </div>
 
             </div>
+
           </div>
+
         </div>
 
-        {/* Advisory */}
+        {/* ===================================================
+            ADVISORY
+        =================================================== */}
 
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
 
           <div className="flex items-center justify-between">
 
             <div className="flex items-center gap-2">
+
               <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center">
                 <Activity className="w-4 h-4 text-teal-600" />
               </div>
 
               <div>
+
                 <h3 className="text-sm font-bold text-slate-900">
-                  Intelligence Directive
+                  {t.aiRecommendations}
                 </h3>
 
                 <p className="text-[10px] text-slate-500">
-                  AI-assisted recommendation
+                  {t.runAssessment}
                 </p>
+
               </div>
+
             </div>
 
             <AudioListenButton text={advisoryText} />
@@ -367,18 +417,26 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div className="mt-5 p-4 rounded-xl bg-teal-50 border border-teal-100">
 
             <p className="text-xs leading-5 text-teal-900">
+
               {currentCrossDomainRisk?.whyThisMatters ||
-                'Gram Setu is combining health, agriculture and environmental indicators to identify emerging rural risks.'}
+                t.whyThisMatters}
+
             </p>
 
           </div>
 
           <button
+            type="button"
             onClick={() => onNavigate('cross-domain')}
             className="w-full mt-4 flex items-center justify-between px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors"
           >
-            <span>View Cross-Domain Analysis</span>
+
+            <span>
+              {t.crossDomainEngine}
+            </span>
+
             <ArrowRight className="w-4 h-4" />
+
           </button>
 
         </div>
@@ -394,18 +452,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="flex items-center justify-between">
 
           <div>
+
             <h2 className="text-sm font-bold text-slate-900">
-              7-Day Rural Risk Trend
+              {t.villageRiskOverview}
             </h2>
 
             <p className="text-xs text-slate-500 mt-1">
-              Composite environmental and community risk indicator
+              {t.overallRuralRisk}
             </p>
+
           </div>
 
           <div className="flex items-center gap-2 text-xs text-slate-500">
+
             <TrendingUp className="w-4 h-4 text-teal-600" />
-            Increasing
+
+            <span>
+              {t.high}
+            </span>
+
           </div>
 
         </div>
@@ -419,11 +484,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               Math.min(100, item.value)
             );
 
-            const isToday = index === trendData.length - 1;
+            const isToday =
+              index === trendData.length - 1;
 
             return (
+
               <div
-                key={item.day}
+                key={`${item.day}-${index}`}
                 className="flex-1 h-full flex flex-col justify-end items-center gap-2"
               >
 
@@ -457,6 +524,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 </span>
 
               </div>
+
             );
           })}
 
@@ -470,7 +538,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
+        {/* HEALTH */}
+
         <button
+          type="button"
           onClick={() => onNavigate('health-risk')}
           className="text-left bg-white border border-slate-200 rounded-2xl p-5 hover:border-teal-300 hover:shadow-sm transition-all"
         >
@@ -486,16 +557,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
 
           <h3 className="text-sm font-bold mt-4">
-            Health Risk Engine
+            {t.healthRisk}
           </h3>
 
           <p className="text-xs text-slate-500 mt-1">
-            Heat stress, symptoms and occupational exposure screening.
+            {t.healthRisk}
           </p>
 
           <div className="mt-4 flex items-center justify-between">
+
             <span className="text-[10px] text-slate-400">
-              Current risk
+              {t.overallRuralRisk}
             </span>
 
             <RiskBadge
@@ -504,11 +576,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
                 'MODERATE'
               }
             />
+
           </div>
 
         </button>
 
+        {/* AGRICULTURE */}
+
         <button
+          type="button"
           onClick={() => onNavigate('agri-intelligence')}
           className="text-left bg-white border border-slate-200 rounded-2xl p-5 hover:border-emerald-300 hover:shadow-sm transition-all"
         >
@@ -524,26 +600,31 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
 
           <h3 className="text-sm font-bold mt-4">
-            Agriculture Risk Engine
+            {t.agriRisk}
           </h3>
 
           <p className="text-xs text-slate-500 mt-1">
-            Crop, weather, soil and disease-risk intelligence.
+            {t.agriRisk}
           </p>
 
           <div className="mt-4 flex items-center justify-between">
+
             <span className="text-[10px] text-slate-400">
-              Crop risk
+              {t.overallRuralRisk}
             </span>
 
             <span className="text-sm font-black text-emerald-600">
               {selectedVillage.agriculturalRisk || 0}/100
             </span>
+
           </div>
 
         </button>
 
+        {/* OFFLINE */}
+
         <button
+          type="button"
           onClick={() => onNavigate('offline-sync')}
           className="text-left bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-300 hover:shadow-sm transition-all"
         >
@@ -559,18 +640,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           </div>
 
           <h3 className="text-sm font-bold mt-4">
-            Offline Data Sync
+            {t.offlineSync}
           </h3>
 
           <p className="text-xs text-slate-500 mt-1">
-            Local-first records synchronize whenever connectivity returns.
+            {t.offlineFirst}
           </p>
 
           <div className="mt-4 flex items-center gap-2">
+
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
+
             <span className="text-xs font-bold text-emerald-600">
-              Ready
+              {t.operational}
             </span>
+
           </div>
 
         </button>
@@ -586,21 +670,27 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
         <div className="flex items-center justify-between mb-5">
 
           <div>
+
             <h2 className="text-sm font-bold text-slate-900">
-              Priority Risk Alerts
+              {t.priorityAlerts}
             </h2>
 
             <p className="text-xs text-slate-500 mt-1">
-              Alerts requiring field-level attention
+              {t.activeAlerts}
             </p>
+
           </div>
 
           <button
+            type="button"
             onClick={() => onNavigate('alerts')}
             className="text-xs font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
           >
-            View all
+
+            {t.alerts}
+
             <ArrowRight className="w-3.5 h-3.5" />
+
           </button>
 
         </div>
@@ -612,11 +702,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <ShieldCheck className="w-9 h-9 text-emerald-500 mx-auto" />
 
             <p className="text-sm font-bold text-slate-800 mt-3">
-              No priority alerts
+              {t.low}
             </p>
 
             <p className="text-xs text-slate-500 mt-1">
-              All monitored risks are currently within acceptable levels.
+              {t.operational}
             </p>
 
           </div>
@@ -626,16 +716,24 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div className="space-y-3">
 
             {priorityAlerts.map((alert) => (
+
               <AlertCard
                 key={alert.id}
                 alert={alert}
                 onAcknowledge={(id) =>
-                  updateAlertStatus(id, 'Acknowledged')
+                  updateAlertStatus(
+                    id,
+                    'Acknowledged'
+                  )
                 }
                 onResolve={(id) =>
-                  updateAlertStatus(id, 'Resolved')
+                  updateAlertStatus(
+                    id,
+                    'Resolved'
+                  )
                 }
               />
+
             ))}
 
           </div>
@@ -645,7 +743,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       </div>
 
       {/* =====================================================
-          DEMO VALUE PROPOSITION
+          VALUE PROPOSITION
       ===================================================== */}
 
       <div className="bg-gradient-to-r from-teal-700 to-cyan-700 rounded-2xl p-6 text-white">
@@ -655,31 +753,37 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
           <div>
 
             <div className="flex items-center gap-2">
+
               <Droplets className="w-4 h-4" />
 
               <span className="text-[10px] font-bold uppercase tracking-widest">
-                Gram Setu
+                {t.appTitle}
               </span>
+
             </div>
 
             <h2 className="text-lg font-bold mt-2">
-              One platform. Two critical rural systems.
+              {t.appTagline}
             </h2>
 
             <p className="text-xs text-teal-100 mt-1 max-w-2xl">
-              Gram Setu connects agricultural intelligence with
-              occupational-health monitoring to identify risks
-              before they become crises.
+              {t.subtitle}
             </p>
 
           </div>
 
           <button
+            type="button"
             onClick={() => onNavigate('cross-domain')}
             className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white text-teal-800 text-xs font-bold hover:bg-teal-50 transition-colors"
           >
-            Explore Intelligence
+
+            <span>
+              {t.crossDomainEngine}
+            </span>
+
             <ArrowRight className="w-4 h-4" />
+
           </button>
 
         </div>
