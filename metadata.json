@@ -1,0 +1,6 @@
+{
+  "name": "Gram Setu - Integrated Rural Risk Intelligence",
+  "description": "Low-bandwidth, offline-first interoperable platform connecting rural healthcare and agriculture for predictive risk mitigation (ABDM & AgriStack PoC).",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
